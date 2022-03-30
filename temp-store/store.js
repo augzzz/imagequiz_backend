@@ -25,7 +25,7 @@ let store = {
     },
 
     getQuiz: (id) => {
-        let quiz = quizzes.find( x = x.name.toLowerCase() === id.toLowerCase() );
+        let quiz = quizzes.find( x => x.name.toLowerCase() === id.toLowerCase() );
         if (quiz) {
             return { done: true, quiz };
         } else {
