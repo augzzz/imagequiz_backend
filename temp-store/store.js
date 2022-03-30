@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const { hash } = require('bcrypt');
 let { customers } = require('./customers');
 let { quizzes } = require('./data');
+let { scores } = require('./scores');
 
 let store = {
 
@@ -31,8 +32,20 @@ let store = {
         } else {
             return { done: false, message: 'No quiz with this name was not found.' };
         }
-    }
+    },
 
+    addScore: (name, id, score, date) => {
+        scores.push( {quizTaker: name, quizId: id, score: score, date: date} );
+    },
+
+    getScore: (name, id) => {
+        let scoreEntry = scores.find( x => x.quizTaker.toLowerCase() === name.toLowerCase() && x.quizId.toLowerCase() === id.toLowerCase() );
+        if (scoreEntry) {
+            return { done: true, scoreEntry };
+        } else {
+             return { done: false, message: 'No score was found for this quiz taker for the specified quiz' };
+        } 
+    }
 }
 
 module.exports = { store }; 
