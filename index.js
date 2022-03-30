@@ -2,7 +2,7 @@ const express = require('express');
 const { store } = require('./temp-store/store');
 
 const application = express();
-const port = 4002;
+const port = process.env.PORT || 4002;
 
 // middleware
 application.use(express.json());
