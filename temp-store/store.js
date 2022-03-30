@@ -8,7 +8,6 @@ let store = {
     addCustomer: (name, email, password) => {
         const hash = bcrypt.hashSync(password, 10);
         customers.push( {id: 1, name: name, email: email, password: hash} );
-
     }, 
 
     login: (email, password) => {
@@ -30,7 +29,7 @@ let store = {
         if (quiz) {
             return { done: true, quiz };
         } else {
-            return { done: false, message: 'No quiz this name was not found.' };
+            return { done: false, message: 'No quiz with this name was not found.' };
         }
     }
 
