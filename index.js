@@ -9,7 +9,7 @@ application.use(express.json());
 //
 
 application.get('/', (request, response) => {
-    response.status(200).json( { done: true, message: 'All good.' } );
+    response.status(200).json( { done: true, message: 'Welcome to imagequiz_backend.' } );
 })
 
 application.post('/register', (request, response) => {
