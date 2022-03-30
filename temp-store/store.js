@@ -1,4 +1,4 @@
-const bcrypt = require('bcrpyt');
+const bcrypt = require('bcrypt');
 const { hash } = require('bcrypt');
 let { customers } = require('./customers');
 let { quizzes } = require('./data');
