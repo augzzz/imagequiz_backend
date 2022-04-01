@@ -2,12 +2,14 @@ const express = require('express');
 const { store } = require('./temp-store/store');
 const { flowers } = require('./temp-store/flowers');
 const { response } = require('express');
+const cors = require('cors');
 
 const application = express();
 const port = process.env.PORT || 4002;
 
 // middleware
 application.use(express.json());
+application.use(cors);
 //
 
 application.get('/', (request, response) => {
