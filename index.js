@@ -73,7 +73,7 @@ application.get('/scores/:quiztaker/:quizname', (request, response) => {
     let result = store.getScore(quizTaker, quizName);
 
     if (result.done) {
-        response.status(200).json( {done: true, result: result, message: result.message} );
+        response.status(200).json( {done: true, result: result.result, message: 'Score(s) returned successfully.'} );
     } else {
         response.status(404).json( {done: false, message: result.message} );
     }
