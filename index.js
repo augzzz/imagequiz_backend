@@ -9,7 +9,7 @@ const port = process.env.PORT || 4002;
 
 // middleware
 application.use(express.json());
-application.use(cors);
+application.use(cors());
 //
 
 application.get('/', (request, response) => {
