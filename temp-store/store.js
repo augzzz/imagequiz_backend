@@ -39,12 +39,17 @@ let store = {
     },
 
     getScore: (name, id) => {
-        let scoreEntry = scores.find( x => x.quizTaker.toLowerCase() === name.toLowerCase() && x.quizName.toLowerCase() === id.toLowerCase() );
-        if (scoreEntry) {
-            return { done: true, scoreEntry };
+        let result = [];
+        for(var i = 0; i < scores.length; i++) {
+            if (scores[i].quizTaker.toLowerCase() === name.toLowerCase() && scores[i].quizName.toLowerCase() === id.toLowerCase()) {
+                result.push(scores[i].score);
+            }
+        }
+        if (result.length === 0) {
+            return { done: false, message: 'No score was found for this quiz taker for the specified quiz' };
         } else {
-             return { done: false, message: 'No score was found for this quiz taker for the specified quiz' };
-        } 
+            return { done: true, result };
+        }
     }
 }
 
