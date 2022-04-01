@@ -59,18 +59,18 @@ application.get('/quiz/:id', (request, response) => {
 
 application.post('/score', (request, response) => {
     let quizTaker = request.body.quizTaker;
-    let quizId = request.body.quizId;
+    let quizName = request.body.quizName;
     let score = request.body.score;
     let date = request.body.date;
 
-    store.addScore(quizTaker, quizId, score, date);
+    store.addScore(quizTaker, quizName, score, date);
     response.status(200).json( {done: true, message: 'Score added successfully'} );
 })
 
-application.get('/scores/:quiztaker/:quizid', (request, response) => {
+application.get('/scores/:quiztaker/:quizname', (request, response) => {
     let quizTaker = request.params.quiztaker;
-    let quizId = request.params.quizid;
-    let result = store.getScore(quizTaker, quizId);
+    let quizName = request.params.quizname;
+    let result = store.getScore(quizTaker, quizName);
 
     if (result.done) {
         response.status(200).json( {done: true, result: result.scoreEntry.score} );

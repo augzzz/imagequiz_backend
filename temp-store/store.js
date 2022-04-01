@@ -35,11 +35,11 @@ let store = {
     },
 
     addScore: (name, id, score, date) => {
-        scores.push( {quizTaker: name, quizId: id, score: score, date: date} );
+        scores.push( {quizTaker: name, quizName: id, score: score, date: date} );
     },
 
     getScore: (name, id) => {
-        let scoreEntry = scores.find( x => x.quizTaker.toLowerCase() === name.toLowerCase() && x.quizId.toLowerCase() === id.toLowerCase() );
+        let scoreEntry = scores.find( x => x.quizTaker.toLowerCase() === name.toLowerCase() && x.quizName.toLowerCase() === id.toLowerCase() );
         if (scoreEntry) {
             return { done: true, scoreEntry };
         } else {
