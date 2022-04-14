@@ -68,30 +68,40 @@ application.get('/quiz/:name', (request, response) => {
         })
         .catch(error => {
             console.log(error);
-            response.status(500).json({ done: false, message: 'Something went wrong...' })
+            response.status(500).json({ done: false, message: 'Something went wrong...' });
         });
 })
 
 application.post('/score', (request, response) => {
-    let quizTaker = request.body.quizTaker;
-    let quizName = request.body.quizName;
+    let quiz_id = request.body.quiz_id;
+    let customer_id = request.body.customer_id;
     let score = request.body.score;
     let date = request.body.date;
 
-    store.addScore(quizTaker, quizName, score, date);
-    response.status(200).json({ done: true, message: 'Score added successfully' });
+    store.addScore(quiz_id, customer_id, score, date)
+        .then(x => response.status(200).json({ done: true, message: 'Score added successfully.' }))
+        .catch(error => {
+            console.log(error);
+            response.status(500).json({ done: false, message: 'Score was not added due to an error.' })
+        });
 })
 
-application.get('/scores/:quiztaker/:quizname', (request, response) => {
-    let quizTaker = request.params.quiztaker;
-    let quizName = request.params.quizname;
-    let result = store.getScore(quizTaker, quizName);
+application.get('/scores/:customer_id/:quiz_id', (request, response) => {
+    let customer_id = request.params.customer_id;
+    let quiz_id = request.params.quiz_id;
 
-    if (result.done) {
-        response.status(200).json({ done: true, result: result.result, message: 'Score(s) returned successfully.' });
-    } else {
-        response.status(404).json({ done: false, message: result.message });
-    }
+    store.getScore(customer_id, quiz_id)
+        .then(x => {
+            if (x.done) {
+                response.status(200).json({ done: true, result: x.result, message: 'Score(s) returned successfully.' });
+            } else {
+                response.status(404).json({ done: false, message: result.message });
+            }
+        })
+        .catch(error => {
+            console.log(error);
+            response.status(500).json({ done: false, message: 'Something went wrong...' });
+        });
 })
 
 application.listen(port, () => {

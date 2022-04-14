@@ -41,6 +41,7 @@ let store = {
         let query = ` select q.id as quiz_id, q2.* from imagequiz.quiz q join imagequiz.quiz_question qq on q.id = qq.quiz_id 
             join imagequiz.question q2 on qq.question_id = q2.id
             where lower(q.name) = $1 `;
+
         return pool.query(query, [name.toLowerCase()])
             .then(x => {
                 //console.log(x);
@@ -57,22 +58,25 @@ let store = {
             });
     },
 
-    addScore: (name, id, score, date) => {
-        scores.push({ quizTaker: name, quizName: id, score: score, date: date });
+    addScore: (quiz_id, customer_id, score, date) => {
+        return pool.query(`INSERT INTO imagequiz.score (quiz_id, customer_id, score, date) VALUES ($1, $2, $3, $4) `, [quiz_id, customer_id, score, date]);
     },
 
-    getScore: (name, id) => {
+    getScore: (customer_id, quiz_id) => {
         let result = [];
-        for (var i = 0; i < scores.length; i++) {
-            if (scores[i].quizTaker.toLowerCase() === name.toLowerCase() && scores[i].quizName.toLowerCase() === id.toLowerCase()) {
-                result.push(scores[i].score);
-            }
-        }
-        if (result.length === 0) {
-            return { done: false, message: 'No score was found for this quiz taker for the specified quiz' };
-        } else {
-            return { done: true, result };
-        }
+        let query = ` select score from imagequiz.score where quiz_id = $1 and customer_id = $2 `;
+
+        return pool.query(query, [customer_id, quiz_id])
+            .then(x => {
+                if (x.rows.length > 0) {
+                    for (var i = 0; i < x.rows.length; i++) {
+                        result.push(x.rows[i].score)
+                    }
+                    return { done: true, result: result };
+                } else {
+                    return { done: false, message: 'No score was found for this quiz taker for the specified quiz' };
+                }
+            })
     }
 }
 
