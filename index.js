@@ -10,8 +10,17 @@ const port = process.env.PORT || 4002;
 // middleware
 application.use(express.json());
 application.use(cors());
+
+application.use( (request, response, next) => {
+    console.log(`request url: ${request.url}`);
+    console.log(`request method: ${request.method}`);
+    // only 4 debugging. remove when submitting.
+    console.log(`request body: ${request.body}`);
+    next();
+})
 //
 
+// methods
 application.get('/', (request, response) => {
     response.status(200).json({ done: true, message: 'Welcome to imagequiz_backend.' });
 })
@@ -76,9 +85,8 @@ application.post('/score', (request, response) => {
     let quiz_id = request.body.quiz_id;
     let customer_id = request.body.customer_id;
     let score = request.body.score;
-    let date = request.body.date;
 
-    store.addScore(quiz_id, customer_id, score, date)
+    store.addScore(quiz_id, customer_id, score)
         .then(x => response.status(200).json({ done: true, message: 'Score added successfully.' }))
         .catch(error => {
             console.log(error);
