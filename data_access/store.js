@@ -58,15 +58,15 @@ let store = {
             });
     },
 
-    addScore: (quiz_id, customer_id, score) => {
-        return pool.query(`INSERT INTO imagequiz.score (quiz_id, customer_id, score, date) VALUES ($1, $2, $3, $4) `, [quiz_id, customer_id, score, Date.now()]);
+    addScore: (quizName, quizTaker, score) => {
+        return pool.query(`INSERT INTO imagequiz.score (quiz_id, customer_id, score, date) VALUES ($1, $2, $3, $4) `, [quizName, quizTaker, score, '04/20/2022']);
     },
 
-    getScore: (customer_id, quiz_id) => {
+    getScore: (quizTaker, quizName) => {
         let result = [];
-        let query = ` select score from imagequiz.score where quiz_id = $1 and customer_id = $2 `;
+        let query = `select score from imagequiz.score where quiz_id = $1 and customer_id = $2`;
 
-        return pool.query(query, [customer_id, quiz_id])
+        return pool.query(query, [quizName, quizTaker])
             .then(x => {
                 if (x.rows.length > 0) {
                     for (var i = 0; i < x.rows.length; i++) {

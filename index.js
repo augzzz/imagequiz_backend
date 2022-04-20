@@ -15,7 +15,8 @@ application.use( (request, response, next) => {
     console.log(`request url: ${request.url}`);
     console.log(`request method: ${request.method}`);
     // only 4 debugging. remove when submitting.
-    console.log(`request body: ${request.body}`);
+    console.log(`request body:`); //
+    console.log(request.body); //
     next();
 })
 //
@@ -82,11 +83,11 @@ application.get('/quiz/:name', (request, response) => {
 })
 
 application.post('/score', (request, response) => {
-    let quiz_id = request.body.quiz_id;
-    let customer_id = request.body.customer_id;
+    let quizTaker = request.body.quizTaker;
+    let quizName = request.body.quizName;
     let score = request.body.score;
 
-    store.addScore(quiz_id, customer_id, score)
+    store.addScore(quizName, quizTaker, score)
         .then(x => response.status(200).json({ done: true, message: 'Score added successfully.' }))
         .catch(error => {
             console.log(error);
@@ -94,11 +95,11 @@ application.post('/score', (request, response) => {
         });
 })
 
-application.get('/scores/:customer_id/:quiz_id', (request, response) => {
-    let customer_id = request.params.customer_id;
-    let quiz_id = request.params.quiz_id;
+application.get('/scores/:quizTaker/:quizName', (request, response) => {
+    let quizTaker = request.params.quizTaker;
+    let quizName = request.params.quizName;
 
-    store.getScore(customer_id, quiz_id)
+    store.getScore(quizTaker, quizName)
         .then(x => {
             if (x.done) {
                 response.status(200).json({ done: true, result: x.result, message: 'Score(s) returned successfully.' });
