@@ -22,12 +22,12 @@ let store = {
     },
 
     login: (email, password) => {
-        return pool.query('SELECT name, email, password FROM imagequiz.customer WHERE email = $1', [email])
+        return pool.query('SELECT id, name, email, password FROM imagequiz.customer WHERE email = $1', [email])
             .then(x => {
                 if (x.rows.length == 1) {
                     let valid = bcrypt.compareSync(password, x.rows[0].password);
                     if (valid) {
-                        return { valid: true };
+                        return { valid: true, user: { id: x.rows[0].name, username: x.rows[0].email } };
                     } else {
                         return { valid: false, message: 'Credentials are not valid.' };
                     }
@@ -37,10 +37,14 @@ let store = {
             });
     },
 
+    getFlowers: () => {
+
+    },
+
     getQuiz: (name) => {
-        let query = ` select q.id as quiz_id, q2.* from imagequiz.quiz q join imagequiz.quiz_question qq on q.id = qq.quiz_id 
-            join imagequiz.question q2 on qq.question_id = q2.id
-            where lower(q.name) = $1 `;
+        let query = `SELECT q.id as quiz_id, q2.* from imagequiz.quiz q JOIN imagequiz.quiz_question qq ON q.id = qq.quiz_id 
+            JOIN imagequiz.question q2 ON qq.question_id = q2.id
+            WHERE lower(q.name) = $1`;
 
         return pool.query(query, [name.toLowerCase()])
             .then(x => {
@@ -59,12 +63,12 @@ let store = {
     },
 
     addScore: (quizName, quizTaker, score) => {
-        return pool.query(`INSERT INTO imagequiz.score (quiz_id, customer_id, score, date) VALUES ($1, $2, $3, $4) `, [quizName, quizTaker, score, '04/20/2022']);
+        return pool.query(`INSERT INTO imagequiz.score (quiz_id, customer_id, score, date) VALUES ($1, $2, $3, $4)`, [quizName, quizTaker, score, '04/20/2022']);
     },
 
     getScore: (quizTaker, quizName) => {
         let result = [];
-        let query = `select score from imagequiz.score where quiz_id = $1 and customer_id = $2`;
+        let query = `SELECT score FROM imagequiz.score WHERE quiz_id = $1 AND customer_id = $2`;
 
         return pool.query(query, [quizName, quizTaker])
             .then(x => {
