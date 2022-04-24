@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+
 var passport = require('passport');
 var LocalStrategy = require('passport-local');
 var session = require('express-session');
@@ -69,7 +70,7 @@ passport.deserializeUser(function (user, cb) {
 //
 application.get('/', (request, response) => {
     response.status(200).json({ done: true, message: 'Welcome to imagequiz_backend.' });
-})
+});
 
 application.post('/register', (request, response) => {
     let name = request.body.name;
@@ -82,7 +83,7 @@ application.post('/register', (request, response) => {
             console.log(error);
             response.status(500).json({ done: false, message: 'Customer was not added due to an error.' })
         });
-})
+});
 
 application.post('/login', passport.authenticate('local', {
     successRedirect: '/login/succeeded',
@@ -91,18 +92,19 @@ application.post('/login', passport.authenticate('local', {
 
 application.get('/login/succeeded', (request, response) => {
     response.status(200).json({ done: true, message: 'Customer logged in successfully.' });
-})
+});
 
 application.get('/login/failed', (request, response) => {
     response.status(401).json({ done: false, message: 'Invalid credentials.' });
-})
+});
+
 
 
 
 application.get('/flowers', (request, response) => {
-    let result = flowers;
+    let flowers = store.getFlowers();
 
-    if (result) {
+    if (flowers) {
         response.status(200).json({ done: true, result: flowers, message: 'Returned flowers list successfully' });
     } else {
         response.status(404).json({ done: false, message: 'Flowers not found.' });

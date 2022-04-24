@@ -38,7 +38,21 @@ let store = {
     },
 
     getFlowers: () => {
-
+        let flowers = [];
+        return pool.query(`SELECT * FROM imagequiz.flowers`)
+            .then(x => {
+                if (x.rows.length > 0) {
+                    for (var i = 0; i < x.rows.length; i++) {
+                        let flower = {};
+                        flower = {
+                            name: x.rows[i].name,
+                            picture: x.rows[i].picture
+                        }
+                        flowers.push(flower);
+                    }    
+                    return flowers;
+                }
+            })
     },
 
     getQuiz: (name) => {
