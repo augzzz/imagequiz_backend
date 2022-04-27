@@ -37,25 +37,13 @@ let store = {
     },
 
     getFlowers: () => {
-        let flowers = [];
-
         return pool.query(`SELECT * FROM imagequiz.flowers`)
             .then(x => {
+                let flowers = [];
                 if (x.rows.length > 0) {
                      flowers = x.rows.map(y => {
                         return { name: y.name, picture: y.picture }
-                    })
-
-                    /*
-                    for (var i = 0; i < x.rows.length; i++) {
-                        let flower = {
-                            name: x.rows[i].name,
-                            picture: x.rows[i].picture
-                        }
-                        flowers.push(flower);
-                    }  
-                    */  
-
+                    }) 
                     return { done: true, result: flowers };
                 } else {
                     return { done: false, message: 'No flowers were found.' };

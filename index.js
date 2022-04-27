@@ -14,7 +14,7 @@ const port = process.env.PORT || 4002;
 // MIDDLEWARE //
 application.use(cors({
     origin: "http://localhost:3000",
-    credntials: true
+    credentials: true
 }));
 application.use(express.json());
 
@@ -105,15 +105,11 @@ application.get('/flowers', (request, response) => {
     store.getFlowers()
         .then(x => {
             if (x.done) {
-                response.status(200).json({ done: true, result: x.flowers });
+                response.status(200).json({ done: true, result: x.result });
             } else {
                 response.status(500).json({ done: false, message: 'Something went wrong...' });
             }
         })
-        .catch(error => {
-            console.log(error);
-            response.status(500).json({ done: false, message: 'Something went wrong...(catch)' });
-        });
 });
 
 
