@@ -11,10 +11,12 @@ const { store } = require('./data_access/store');
 const application = express();
 const port = process.env.PORT || 4002;
 
-// MIDDLEWARE
-//
+// MIDDLEWARE //
+application.use(cors({
+    origin: "http://localhost:3000",
+    credntials: true
+}));
 application.use(express.json());
-application.use(cors());
 
 application.use((request, response, next) => {
     console.log(`request url: ${request.url}`);
@@ -64,10 +66,8 @@ passport.deserializeUser(function (user, cb) {
     });
 });
 //
-//
 
-// METHODS
-//
+// METHODS //
 application.get('/', (request, response) => {
     response.status(200).json({ done: true, message: 'Welcome to imagequiz_backend.' });
 });
@@ -102,14 +102,19 @@ application.get('/login/failed', (request, response) => {
 
 
 application.get('/flowers', (request, response) => {
-    let flowers = store.getFlowers();
-
-    if (flowers) {
-        response.status(200).json({ done: true, result: flowers, message: 'Returned flowers list successfully' });
-    } else {
-        response.status(404).json({ done: false, message: 'Flowers not found.' });
-    }
-})
+    store.getFlowers()
+        .then(x => {
+            if (x.done) {
+                response.status(200).json({ done: true, result: x.flowers });
+            } else {
+                response.status(500).json({ done: false, message: 'Something went wrong...' });
+            }
+        })
+        .catch(error => {
+            console.log(error);
+            response.status(500).json({ done: false, message: 'Something went wrong...(catch)' });
+        });
+});
 
 
 
@@ -132,7 +137,7 @@ application.get('/quiz/:name', (request, response) => {
             console.log(error);
             response.status(500).json({ done: false, message: 'Something went wrong...' });
         });
-})
+});
 
 
 
@@ -152,7 +157,7 @@ application.get('/scores/:quizTaker/:quizName', (request, response) => {
             console.log(error);
             response.status(500).json({ done: false, message: 'Something went wrong...' });
         });
-})
+});
 
 
 
@@ -167,7 +172,7 @@ application.post('/score', (request, response) => {
             console.log(error);
             response.status(500).json({ done: false, message: 'Score was not added due to an error.' })
         });
-})
+});
 
 
 
@@ -176,7 +181,7 @@ application.post('/score', (request, response) => {
 
 application.listen(port, () => {
     console.log(`Listening to port ${port} `);
-})
+});
 
 //
 //

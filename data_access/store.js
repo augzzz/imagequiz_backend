@@ -1,7 +1,6 @@
 const bcrypt = require('bcrypt');
 const { Pool } = require('pg');
 require('dotenv').config();
-let { quizzes } = require('../temp-store/data');
 
 const connectionString =
     `postgres://${process.env.USER}:${process.env.PASSWORD}@${process.env.HOST}:${process.env.DATABASEPORT}/${process.env.DATABASE}`
@@ -39,18 +38,27 @@ let store = {
 
     getFlowers: () => {
         let flowers = [];
+
         return pool.query(`SELECT * FROM imagequiz.flowers`)
             .then(x => {
                 if (x.rows.length > 0) {
+                     flowers = x.rows.map(y => {
+                        return { name: y.name, picture: y.picture }
+                    })
+
+                    /*
                     for (var i = 0; i < x.rows.length; i++) {
-                        let flower = {};
-                        flower = {
+                        let flower = {
                             name: x.rows[i].name,
                             picture: x.rows[i].picture
                         }
                         flowers.push(flower);
-                    }    
-                    return flowers;
+                    }  
+                    */  
+
+                    return { done: true, result: flowers };
+                } else {
+                    return { done: false, message: 'No flowers were found.' };
                 }
             })
     },
@@ -62,7 +70,7 @@ let store = {
 
         return pool.query(query, [name.toLowerCase()])
             .then(x => {
-                //console.log(x);
+                console.log(x);
                 let quiz = {};
                 if (x.rows.length > 0) {
                     quiz = {
