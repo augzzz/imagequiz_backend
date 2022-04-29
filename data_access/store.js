@@ -52,7 +52,7 @@ let store = {
     },
 
     getQuiz: (name) => {
-        let query = `SELECT q.id as quiz_id, q2.* from imagequiz.quiz q JOIN imagequiz.quiz_question qq ON q.id = qq.quiz_id 
+        let query = `SELECT q.id AS quiz_id, q2.* FROM imagequiz.quiz q JOIN imagequiz.quiz_question qq ON q.id = qq.quiz_id 
             JOIN imagequiz.question q2 ON qq.question_id = q2.id
             WHERE lower(q.name) = $1`;
 
