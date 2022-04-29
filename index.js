@@ -98,7 +98,10 @@ application.get('/login/failed', (request, response) => {
     response.status(401).json({ done: false, message: 'Invalid credentials.' });
 });
 
-
+application.post('/logout', (request, response) => {
+    request.logout();
+    response.json({ done: true, message: 'Customer signed out successfully.' })
+});
 
 
 application.get('/flowers', (request, response) => {
