@@ -8,11 +8,13 @@ let store = {
 
     addCustomer: (name, email, password) => {
         const hash = bcrypt.hashSync(password, 10);
+
         customers.push( {id: 1, name: name, email: email, password: hash} );
     }, 
 
     login: (email, password) => {
         let customer = customers.find(x => x.email.toLowerCase() === email.toLowerCase());
+
         if (customer) {
             let valid = bcrypt.compareSync(password, customer.password);
             if (valid) {
@@ -27,8 +29,9 @@ let store = {
 
     getQuiz: (id) => {
         let quiz = quizzes.find( x => x.name.toLowerCase() === id.toLowerCase() );
+
         if (quiz) {
-            return { done: true, quiz };
+            return { done: true, result: quiz, message: 'Quiz found successfully.' };
         } else {
             return { done: false, message: 'No quiz with this name was not found.' };
         }

@@ -20,6 +20,7 @@ application.use(cors({
 application.use(express.json());
 
 application.use((request, response, next) => {
+
     console.log(`request url: ${request.url}`);
     console.log(`request method: ${request.method}`);
     // only 4 debugging. remove when submitting.

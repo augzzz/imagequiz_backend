@@ -2,6 +2,8 @@ const bcrypt = require('bcrypt');
 const { Pool } = require('pg');
 require('dotenv').config();
 
+let { quizzes } = require('../temp-store/data');
+
 const connectionString =
     `postgres://${process.env.USER}:${process.env.PASSWORD}@${process.env.HOST}:${process.env.DATABASEPORT}/${process.env.DATABASE}`
 
@@ -53,8 +55,7 @@ let store = {
 
     getQuiz: (name) => {
         let query = `SELECT q.id AS quiz_id, q2.* FROM imagequiz.quiz q JOIN imagequiz.quiz_question qq ON q.id = qq.quiz_id 
-            JOIN imagequiz.question q2 ON qq.question_id = q2.id
-            WHERE lower(q.name) = $1`;
+            JOIN imagequiz.question q2 ON qq.question_id = q2.id WHERE lower(q.name) = $1`;
 
         return pool.query(query, [name.toLowerCase()])
             .then(x => {

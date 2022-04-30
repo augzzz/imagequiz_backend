@@ -3,6 +3,7 @@ const { flowers } = require('./flowers');
 let generateQuestions = () => {
     let questions = [];
     let choiceIndex = 0;
+
     for(let i = 0; i < flowers.length; i++) {
         choiceIndex = i;
         if(choiceIndex > (flowers.length - 4)){
@@ -22,6 +23,7 @@ let generateQuizzes = () => {
     let quizzes = []; 
     let questionIndex = 0;
     let questions = generateQuestions();
+
     for(let i = 0; i < questions.length; i++){
         questionIndex = i;
         if(questionIndex > (questions.length - 7)) {
@@ -42,6 +44,10 @@ let generateQuizzes = () => {
 };
 
 let quizzes = generateQuizzes();
+
+
+
+
 
 
 module.exports = { quizzes }; 
