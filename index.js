@@ -14,7 +14,7 @@ const port = process.env.PORT || 4002;
 
 // MIDDLEWARE //
 application.use(cors({
-    origin: "http://localhost:3000",           // "http://localhost:3000"    // "https://augzzz.github.io"
+    origin: "https://augzzz.github.io",           // "http://localhost:3000"    // "https://augzzz.github.io"
     credentials: true
 }));
 
