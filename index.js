@@ -172,9 +172,11 @@ application.get('/flowers', (request, response) => {
 });
 
 application.get('/quiz/:name', (request, response) => {
+    /*
     if (!request.isAuthenticated()) {
         response.status(401).json({ done: false, message: 'Please log in first.' });
     }
+    */
 
     let name = request.params.name;
 
