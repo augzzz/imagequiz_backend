@@ -14,9 +14,10 @@ const port = process.env.PORT || 4002;
 
 // MIDDLEWARE //
 application.use(cors({
-    origin: "http://localhost:3000",
+    origin: "http://augzzz.github.io/imagequiz",
     credentials: true
 }));
+
 application.use(express.json());
 
 application.use((request, response, next) => {
@@ -30,7 +31,8 @@ application.use((request, response, next) => {
 })
 
 // verification 
-passport.use(new LocalStrategy({ usernameField: 'email' }, function verify(username, password, cb) {
+passport.use(
+    new LocalStrategy({ usernameField: 'email' }, function verify(username, password, cb) {
     store.login(username, password)
         .then(x => {
             if (x.valid) {
