@@ -18,6 +18,7 @@ application.use(cors({
     credentials: true
 }));
 
+
 application.use(express.json());
 
 application.use((request, response, next) => {
