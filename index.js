@@ -14,7 +14,7 @@ const port = process.env.PORT || 4002;
 
 // MIDDLEWARE //
 application.use(cors({
-    origin: "https://augzzz.github.io/ISTA330/practicum/week-10/index.html",
+    origin: "https://augzzz.github.io",
     credentials: true
 }));
 
