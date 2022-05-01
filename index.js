@@ -14,7 +14,7 @@ const port = process.env.PORT || 4002;
 
 // MIDDLEWARE //
 application.use(cors({
-    origin: "http://augzzz.github.io/imagequiz",
+    origin: "http://augzzz.github.io/",
     credentials: true
 }));
 
