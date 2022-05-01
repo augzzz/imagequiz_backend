@@ -163,7 +163,7 @@ application.get('/flowers', (request, response) => {
             if (x.done) {
                 response.status(200).json({ done: true, result: x.result });
             } else {
-                response.status(500).json({ done: false, message: 'Something went wrong...' });
+                response.status(500).json({ done: false, message: result.message });
             }
         })
 });
@@ -180,7 +180,7 @@ application.get('/quiz/:name', (request, response) => {
             if (x.id) {
                 response.status(200).json({ done: true, result: x });
             } else {
-                response.status(404).json({ done: false, message: result.message });
+                response.status(404).json({ done: false, message: 'Could not get quiz.' });
             }
         })
         .catch(error => {
