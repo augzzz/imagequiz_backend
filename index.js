@@ -8,7 +8,8 @@ var SQLiteStore = require('connect-sqlite3')(session);
 const { store } = require('./data_access/store');
 
 let backendURL = 'http://localhost:4002';
-let frontEndURL = 'http://localhost:3000';     // for deployment?: 'https://augzzz.github.io'
+let frontEndURL = 'https://augzzz.github.io';
+// let frontEndURL = 'https://augzzz.github.io';     
 
 const application = express();
 const port = process.env.PORT || 4002;
