@@ -8,8 +8,7 @@ var SQLiteStore = require('connect-sqlite3')(session);
 const { store } = require('./data_access/store');
 
 let backendURL = 'http://localhost:4002';
-let frontEndURL = 'http://localhost:3000';
-// for deployment?: 'https://augzzz.github.io'
+let frontEndURL = 'http://localhost:3000';     // for deployment?: 'https://augzzz.github.io'
 
 const application = express();
 const port = process.env.PORT || 4002;
@@ -164,7 +163,6 @@ application.post('/logout', (request, response) => {
 
 
 
-
 application.get('/flowers', (request, response) => {
     store.getFlowers()
         .then(x => {
@@ -188,26 +186,6 @@ application.get('/quiz/:name', (request, response) => {
             if (x.id) {
                 response.status(200).json({ done: true, result: x });
             } else {
-                response.status(404).json({ done: false, message: 'Could not get quiz.' });
-            }
-        })
-        .catch(error => {
-            console.log(error);
-            response.status(500).json({ done: false, message: 'Something went wrong...' });
-        });
-});
-
-
-
-application.get('/scores/:quizTaker/:quizName', (request, response) => {
-    let quizTaker = request.params.quizTaker;
-    let quizName = request.params.quizName;
-
-    store.getScore(quizTaker, quizName)
-        .then(x => {
-            if (x.done) {
-                response.status(200).json({ done: true, result: x.result, message: 'Score(s) returned successfully.' });
-            } else {
                 response.status(404).json({ done: false, message: result.message });
             }
         })
@@ -223,14 +201,35 @@ application.post('/score', (request, response) => {
     let quizTaker = request.body.quizTaker;
     let quizName = request.body.quizName;
     let score = request.body.score;
+    let date = new Date();
 
-    store.addScore(quizName, quizTaker, score)
+    store.addScore(quizName, quizTaker, score, date)
         .then(x => response.status(200).json({ done: true, message: 'Score added successfully.' }))
         .catch(error => {
             console.log(error);
             response.status(500).json({ done: false, message: 'Score was not added due to an error.' })
         });
 });
+
+
+application.get('/scores/:quizTaker/:quizName', (request, response) => {
+    let quizTaker = request.params.quizTaker;
+    let quizName = request.params.quizName;
+
+    store.getScore(quizTaker, quizName)
+        .then(x => {
+            if (x.done) {
+                response.status(200).json({ done: true, result: x.result, message: result.message });
+            } else {
+                response.status(404).json({ done: false, message: result.message });
+            }
+        })
+        .catch(error => {
+            console.log(error);
+            response.status(500).json({ done: false, message: 'Something went wrong...' });
+        });
+});
+
 
 
 

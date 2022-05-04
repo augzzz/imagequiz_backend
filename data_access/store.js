@@ -99,11 +99,9 @@ let store = {
             });
     },
 
-    //
-    addScore: (quizName, quizTaker, score) => {
-        return pool.query(`INSERT INTO imagequiz.score (quiz_id, customer_id, score, date) VALUES ($1, $2, $3, $4)`, [quizName, quizTaker, score, '04/20/2022']);
+    addScore: (quizName, quizTaker, score, date) => {
+        return pool.query(`INSERT INTO imagequiz.score (quiz_id, customer_id, score, date) VALUES ($1, $2, $3, $4)`, [quizName, quizTaker, score, date]);
     },
-    //
 
     getScore: (quizTaker, quizName) => {
         let result = [];
@@ -115,7 +113,7 @@ let store = {
                     for (var i = 0; i < x.rows.length; i++) {
                         result.push(x.rows[i].score)
                     }
-                    return { done: true, result: result };
+                    return { done: true, result: result, message: 'Score(s) found.' };
                 } else {
                     return { done: false, message: 'No score was found for this quiz taker for the specified quiz' };
                 }
