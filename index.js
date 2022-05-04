@@ -1,20 +1,23 @@
 const express = require('express');
 const cors = require('cors');
-
 var passport = require('passport');
 var LocalStrategy = require('passport-local');
-var GoogleStrategy = require('passport-google-oidc');
+const GoogleStrategy = require('passport-google-oauth2').Strategy;
 var session = require('express-session');
 var SQLiteStore = require('connect-sqlite3')(session);
-
 const { store } = require('./data_access/store');
+
+let backendURL = 'http://localhost:4002';
+let frontEndURL = 'http://localhost:3000';
+// for deployment?: 'https://augzzz.github.io'
 
 const application = express();
 const port = process.env.PORT || 4002;
 
+
 // MIDDLEWARE //
 application.use(cors({
-    origin: "https://augzzz.github.io",           // "http://localhost:3000"    // "https://augzzz.github.io"
+    origin: frontEndURL,
     credentials: true
 }));
 
@@ -34,68 +37,38 @@ application.use((request, response, next) => {
 // verification 
 passport.use(
     new LocalStrategy({ usernameField: 'email' }, function verify(username, password, cb) {
-    store.login(username, password)
-        .then(x => {
-            if (x.valid) {
-                return cb(null, x.user);
-            } else {
-                return cb(null, false, { message: 'Incorrect username or password.' });
-            }
-        })
-        .catch(error => {
-            console.log(error);
-            cb('Soemthing went wrong...');
-        });
-}));
+        store.login(username, password)
+            .then(x => {
+                if (x.valid) {
+                    return cb(null, x.user);
+                } else {
+                    return cb(null, false, { message: 'Incorrect username or password.' });
+                }
+            })
+            .catch(error => {
+                console.log(error);
+                cb('Soemthing went wrong...');
+            });
+    }));
 
-// Google authentication
-/*
+// google authentication
 passport.use(new GoogleStrategy({
-    clientID: process.env['GOOGLE_CLIENT_ID'],
-    clientSecret: process.env['GOOGLE_CLIENT_SECRET'],
-    callbackURL: 'https://www.example.com/oauth2/redirect/google'
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: `${backendURL}/auth/google/callback`,
+    passReqToCallback: true
 },
-    function (issuer, profile, cb) {
-        db.get('SELECT * FROM federated_credentials WHERE provider = ? AND subject = ?', [
-            issuer,
-            profile.id
-        ], function (err, cred) {
-            if (err) { return cb(err); }
-            if (!cred) {
-                // The Google account has not logged in to this app before.  Create a
-                // new user record and link it to the Google account.
-                db.run('INSERT INTO users (name) VALUES (?)', [
-                    profile.displayName
-                ], function (err) {
-                    if (err) { return cb(err); }
+    function (request, accessToken, refreshToken, profile, done) {
+        console.log('in Google strategy:');
+        //console.log(profile);
+        store.findOrCreateNonLocalCustomer(profile.displayName, profile.email, profile.id, profile.provider)
+            .then(x => done(null, x))
+            .catch(e => {
+                console.log(e);
+                return done('Something went wrong.');
+            });
 
-                    var id = this.lastID;
-                    db.run('INSERT INTO federated_credentials (user_id, provider, subject) VALUES (?, ?, ?)', [
-                        id,
-                        issuer,
-                        profile.id
-                    ], function (err) {
-                        if (err) { return cb(err); }
-                        var user = {
-                            id: id.toString(),
-                            name: profile.displayName
-                        };
-                        return cb(null, user);
-                    });
-                });
-            } else {
-                // The Google account has previously logged in to the app.  Get the
-                // user record linked to the Google account and log the user in.
-                db.get('SELECT * FROM users WHERE id = ?', [cred.user_id], function (err, user) {
-                    if (err) { return cb(err); }
-                    if (!user) { return cb(null, false); }
-                    return cb(null, user);
-                })
-            }
-        })
-    }
-));
-*/
+    }));
 
 // session authentication
 application.use(session({
@@ -152,6 +125,38 @@ application.get('/login/failed', (request, response) => {
     response.status(401).json({ done: false, message: 'Invalid credentials.' });
 });
 
+application.get('/auth/google',
+    passport.authenticate('google', {
+        scope:
+            ['email', 'profile']
+    }
+    ));
+
+application.get('/auth/google/callback',
+    passport.authenticate('google', {
+        successRedirect: '/auth/google/success',
+        failureRedirect: '/auth/google/failure'
+    }));
+
+application.get('/auth/google/success', (request, response) => {
+    console.log('/auth/google/success');
+    console.log(request.user);
+    response.redirect(`${frontEndURL}/#/google/${request.user.username}/${request.user.name}`);
+});
+
+application.get('/auth/google/failure', (request, response) => {
+    console.log('/auth/google/failure');
+    response.redirect(`${frontEndURL}/#/google/failed`);
+});
+
+application.get('/isloggedin', (request, response) => {
+    if (request.isAuthenticated()) {
+        response.status(200).json({ done: true, result: true });
+    } else {
+        response.status(410).json({ done: false, result: false });
+    }
+});
+
 application.post('/logout', (request, response) => {
     request.logout();
     response.json({ done: true, message: 'Customer signed out successfully.' })
@@ -172,11 +177,9 @@ application.get('/flowers', (request, response) => {
 });
 
 application.get('/quiz/:name', (request, response) => {
-    /*
     if (!request.isAuthenticated()) {
         response.status(401).json({ done: false, message: 'Please log in first.' });
     }
-    */
 
     let name = request.params.name;
 
