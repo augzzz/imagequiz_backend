@@ -3,7 +3,7 @@ const { Pool } = require('pg');
 require('dotenv').config();
 
 const connectionString =
-    `postgres://kfolofaokafnjn:${process.env.PASSWORD}@${process.env.HOST}:${process.env.DATABASEPORT}/${process.env.DATABASE}`
+    `postgres://${process.env.DBUSER}:${process.env.DBPASSWORD}@${process.env.HOST}:${process.env.DATABASEPORT}/${process.env.DATABASE}`
 
 const connection = {
     connectionString: process.env.DATABASE_URL ? process.env.DATABASE_URL : connectionString,
