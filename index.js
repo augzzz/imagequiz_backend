@@ -12,8 +12,8 @@ const { store } = require('./data_access/store');
 //let frontEndURL = 'http://localhost:3000';
 
 // DEPLOYMENT USE //
-let backendURL = 'https://augzzz-imagequiz-api.herokuapp.com';
-let frontEndURL = 'https://augzzz.github.io/imagequiz/';     
+let backendURL = 'https://augzzz-imagequiz-api.herokuapp.com/';
+let frontEndURL = 'https://augzzz.github.io/imagequiz';     
 
 const application = express();
 const port = process.env.PORT || 4002;
